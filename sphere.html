@@ -31,21 +31,26 @@
 
       // 箱を作成
       // new THREE.BoxGeometry(幅, 高さ, 奥行き)
-      const geometry = new THREE.BoxGeometry(400, 400, 400);
+      const geometry = new THREE.SphereGeometry(300, 30, 30);
       // THREE.MeshNormalMaterialという適当なカラーを割り振るマテリアル
-      const material = new THREE.MeshNormalMaterial();
+      const material = new THREE.MeshStandardMaterial({color: 0xFF0000});
       // new THREE.Mesh(ジオメトリ,マテリアル)
-      const box = new THREE.Mesh(geometry, material);
-      scene.add(box);
+      const sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      // 平行光源
+      const directionalLight = new THREE.DirectionalLight(0xFFFFFF);
+      directionalLight.position.set(1, 1, 1);
+      // シーンに追加
+      scene.add(directionalLight);
 
       tick();
 
       // 毎フレーム時に実行されるループイベント
       function tick() {
-        box.rotation.x += 0.005;
-        box.rotation.z += 0.01;
-        box.rotation.y += 0.01;
-        renderer.render(scene, camera); // レンダリング
+        sphere.rotation.y += 0.01;
+        // レンダリング
+        renderer.render(scene, camera);
 
         requestAnimationFrame(tick);
       }
