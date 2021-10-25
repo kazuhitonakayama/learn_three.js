@@ -2,15 +2,17 @@
 <html>
 <head>
   <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <script src="https://unpkg.com/three@0.131.3/build/three.min.js"></script>
+  <link rel="stylesheet" href="./index.css">
   <script>
     // ページの読み込みを待つ
     window.addEventListener('load', init);
 
     function init() {
       // サイズを指定
-      const width = 960;
-      const height = 540;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
 
       // レンダラーを作成
       const renderer = new THREE.WebGLRenderer({
@@ -23,7 +25,8 @@
       const scene = new THREE.Scene();
 
       // カメラを作成
-      const camera = new THREE.PerspectiveCamera(100, width / height);
+      // THREE.PerspectiveCamera(画角、アスペクト比、描画開始距離、描画終了距離)
+      const camera = new THREE.PerspectiveCamera(90, width / height);
       camera.position.set(0, 0, +1000);
 
       // 箱を作成
@@ -34,11 +37,11 @@
 
       tick();
 
-      // 毎フレーム時に実行されるループイベントです
+      // 毎フレーム時に実行されるループイベント
       function tick() {
         box.rotation.x += 0.005;
-        box.rotation.z += 0.005;
-        box.rotation.y += 0.005;
+        box.rotation.z += 0.01;
+        box.rotation.y += 0.01;
         renderer.render(scene, camera); // レンダリング
 
         requestAnimationFrame(tick);
