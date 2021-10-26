@@ -2,3 +2,12 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.fire_earth {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    color:red;
+    font-size: 50px;
+}

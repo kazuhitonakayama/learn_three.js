@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script src="https://unpkg.com/three@0.131.3/build/three.min.js"></script>
+  <link rel="stylesheet" href="./index.css">
+  <script>
+    // ページの読み込みを待つ
+    window.addEventListener('load', init);
+
+    function init() {
+      // サイズを指定
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // レンダラーを作成
+      const renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector('#myCanvas')
+      });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(width, height);
+
+      // シーンを作成
+      const scene = new THREE.Scene();
+
+      // カメラを作成
+      // THREE.PerspectiveCamera(画角、アスペクト比、描画開始距離、描画終了距離)
+      const camera = new THREE.PerspectiveCamera(90, width / height);
+      camera.position.set(0, 0, +1000);
+
+      // 箱を作成
+      // new THREE.BoxGeometry(幅, 高さ, 奥行き)
+      const geometry = new THREE.SphereGeometry(300, 30, 30);
+      // 画像を読み込む
+      const loader = new THREE.TextureLoader();
+      const texture = loader.load('https://images.unsplash.com/photo-1522046310824-b844b4b5806f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80');
+      // THREE.MeshNormalMaterialという適当なカラーを割り振るマテリアル
+      // マテリアルにテクスチャーを設定
+      const material = new THREE.MeshStandardMaterial({
+        map: texture
+      });
+      // new THREE.Mesh(ジオメトリ,マテリアル)
+      const sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      // 平行光源
+      const directionalLight = new THREE.DirectionalLight(0xFFFFFF);
+      directionalLight.position.set(1, 1, 1);
+      // シーンに追加
+      scene.add(directionalLight);
+
+      tick();
+
+      // 毎フレーム時に実行されるループイベント
+      function tick() {
+        sphere.rotation.y += 0.01;
+        // レンダリング
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(tick);
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+  <div class="fire_earth">
+    <p class="copy" data-z data-z-event="pointer">火星</p>
+  </div>
+  <script src="./js/ztext.js"></script>
+</body>
+</html>
