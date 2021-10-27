@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script src="https://unpkg.com/three@0.131.3/build/three.min.js"></script>
+  <link rel="stylesheet" href="./index.css">
+  <script>
+    // ページの読み込みを待つ
+    window.addEventListener('load', init);
+
+    function init() {
+      // サイズを指定
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // レンダラーを作成
+      const renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector('#myCanvas')
+      });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(width, height);
+      // レンダラー：シャドウを有効にする
+      renderer.shadowMap.enabled = true;
+
+      // シーンを作成
+      const scene = new THREE.Scene();
+
+      // カメラを作成
+      // THREE.PerspectiveCamera(画角、アスペクト比、描画開始距離、描画終了距離)
+      const camera = new THREE.PerspectiveCamera(5, width / height);
+      camera.position.set(0, 100, 1000);
+
+      // ドーナツを作成
+      // new THREE.BoxGeometry(幅, 高さ, 奥行き)
+      const geometry = new THREE.TorusGeometry( 10, 3, 16, 100 );
+      // THREE.MeshNormalMaterialという適当なカラーを割り振るマテリアル
+      const material = new THREE.MeshStandardMaterial({color: 0x6699FF, roughness:0.5});
+      // new THREE.Mesh(ジオメトリ,マテリアル)
+      const torus = new THREE.Mesh(geometry, material);
+      // torusに影を落とす
+      torus.castShadow = true;
+      scene.add(torus);
+
+      // スポットライト光源を作成
+      // new THREE.SpotLight(色, 光の強さ, 距離, 照射角, ボケ具合, 減衰率)
+      // const light = new THREE.SpotLight(0xFFFFFF, 4, 300, 10, 10, 0.5);
+      // default is (0, 1, 0)
+      // light.position.set( 29, -10, 0 );
+      // scene.add(light);
+
+      // スポットライト光源を作成
+      // new THREE.SpotLight(色, 光の強さ, 距離, 照射角, ボケ具合, 減衰率)
+      const second_light = new THREE.SpotLight(0xFFFFFF, 3, 300, 7, 10, 0.5);
+      // default is (0, 1, 0)
+      second_light.position.set( -50, 40, 0 );
+      second_light.castShadow = true;
+      scene.add(second_light);
+
+      // ヘルパーを作成
+      //const lightHelper = new THREE.SpotLightHelper(light);
+      const secondlightHelper = new THREE.SpotLightHelper(second_light);
+      //scene.add(lightHelper);
+      scene.add(secondlightHelper);
+
+      // 地面を作る
+      const planeGeometry = new THREE.PlaneGeometry( 2000, 2000 ); // 幅：2000、高さ2000の平面
+      const planeMaterial = new THREE.MeshPhongMaterial( { color: 0x808080, dithering: true } );
+      const plane = new THREE.Mesh(planeGeometry, planeMaterial); // ジオメトリとマテリアルでメッシュを作成
+      plane.position.set( 0, - 20, 0 );
+      plane.rotation.x = - Math.PI * 0.5;
+      plane.receiveShadow = true;
+      scene.add(plane);
+
+      tick();
+
+      // 毎フレーム時に実行されるループイベント
+      function tick() {
+        torus.rotation.x += 0.1;
+        torus.rotation.z += 0.1;
+        torus.rotation.y += 0.01;
+        renderer.render(scene, camera); // レンダリング
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        // ヘルパーを更新
+        //lightHelper.update();
+        secondlightHelper.update();
+
+        requestAnimationFrame(tick);
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+</body>
+</html>
